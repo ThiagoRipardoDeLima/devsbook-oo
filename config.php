@@ -8,3 +8,5 @@ $db_user = 'root';
 $db_pass = '';
 
 $pdo = new PDO("mysql:dbname=". $db_name .";hots=". $db_host, $db_user,$db_pass);
+
+date_default_timezone_set('America/Cuiaba');

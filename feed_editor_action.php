@@ -16,7 +16,7 @@ if( $body ) {
     $newPost  =  new Post();
     $newPost->id_user = $userInfo->id;
     $newPost->type = 'Text';
-    $newPost->created_at = date('Y-m-d H:i:s');
+    $newPost->created_at = date('Y-m-d H:i:s', time());
     $newPost->body = $body;
     
     $postDao->insert($newPost);

@@ -1,5 +1,7 @@
 <?php 
 require_once 'models/Post.php';
+require_once 'dao/UserRelationDao.php';
+require_once 'dao/UserDao.php';
 
 class PostDao implements IPostDao 
 {
@@ -83,6 +85,64 @@ class PostDao implements IPostDao
 
     }
 
+    public function getHomeFeed($id_user){
+        $array = [];
+
+        // 1 . Lista  de  user que  eu sigo
+        $urd = new UserRelationDao($this->pdo);
+        $userList = $urd->getRelationsFrom($id_user);
+
+        // 2 . Pegar  os posts ordenado pela  data
+        $sql = $this->pdo->query("SELECT * FROM posts WHERE id_user in (".implode(',', $userList).") ORDER BY created_at DESC");
+
+        if($sql->rowCount() > 0){
+            $data = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+            // 3 .  Transformar resultado em objetos
+            $array = $this->_postListToObjet($data, $id_user);
+
+        }
+
+        return $array;
+        
+
+    }
+
+    private function _postListToObjet($post_List, $id_user)
+    {
+
+        $posts = [];
+        $userDao = new UserDao($this->pdo);
+
+        foreach($post_List as $post_item){
+            $newPost = new Post();
+            $newPost->id = $post_item['id'];
+            $newPost->id_user = $post_item['id_user'];
+            $newPost->type = $post_item['type'];
+            $newPost->created_at = $post_item['created_at'];
+            $newPost->body = $post_item['body'];
+            $newPost->mine = false;
+
+            if($post_item['id_user'] == $id_user){
+                $newPost->mine = true;
+            }
+
+            //pegar info do user
+            $newPost->user = $userDao->findById($post_item['id_user']);
+
+            //info sobre like
+            $newPost->likeCount = 0;
+            $newPost->liked = false;
+
+            //info sobre comments
+            $newPost->comments = [];
+
+            $posts[] = $newPost;
+
+        }
+
+        return $posts;
+    }
     
 
 }

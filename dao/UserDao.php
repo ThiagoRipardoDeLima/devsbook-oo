@@ -65,6 +65,27 @@ class UserDao implements IUserDao
         exit;
     }
 
+    public function findById($id)
+    {
+       
+        if( !empty($id) ){
+            $sql = "SELECT * FROM users WHERE id = :id";
+            $prepare  =  $this->pdo->prepare($sql);
+            $prepare->bindValue(':id',$id);
+            $prepare->execute();
+
+            if( $prepare->rowCount()> 0 ){
+                $data  = $prepare->fetch(PDO::FETCH_ASSOC);
+                $user  = $this->generateUser($data);
+                return $user;
+            }
+        }
+
+        return false;
+        
+    }
+
+
     public function update(User $u)
     {
         $sql = $this->pdo->prepare(
