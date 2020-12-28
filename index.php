@@ -1,20 +1,20 @@
 <?php
-
 require 'config.php';
-require 'models/Auth.php';
-require 'dao/PostDao.php';
 
 $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken();
 
-//echo '<pre>';
-//var_dump($userInfo);exit;
+echo '<pre>';
+var_dump($userInfo);exit;
 $activeMenu = 'home';
 
 $postDao = new PostDao($pdo);
 $feed = $postDao->getHomeFeed($userInfo->id);
+//$dataPost = date('d/m/Y',strtotime($feed[0]->created_at));
 
+//var_dump($dataPost);
 //var_dump($feed);
+//exit;
 
 include_once 'partial/header.php';
 include_once 'partial/menu.php';
@@ -24,7 +24,10 @@ include_once 'partial/menu.php';
     <div class="row">
         <div class="column pr-5">
             <?php require "partial/feed-editor.php"?>
-            <?php require "partial/feed-item.php"?>
+
+            <?php foreach($feed as $item): ?>
+                <?php require "partial/feed-item.php"?>
+            <?php endforeach; ?>
         </div>
 
         <div class="column side pl-5">
