@@ -12,6 +12,7 @@ switch($item->type){
 $dataPost = date('d/m/Y',strtotime($item->created_at));
 $isLiked = $item->liked;
 
+$avatar = strlen($userInfo->avatar) > 0 ? $userInfo->avatar : "avatar.jpg";
 //echo '<pre>';
 //var_dump($item);exit;
 
@@ -21,7 +22,7 @@ $isLiked = $item->liked;
     <div class="box-body">
         <div class="feed-item-head row mt-20 m-width-20">
             <div class="feed-item-head-photo">
-                <a href="<?= $base ?>/perfil.php?id=<?= $item->user->id ?>"><img src="<?= $base ?>/resources/media/avatars/<?= $item->user->avatar ?>.jpg" /></a>
+                <a href="<?= $base ?>/perfil.php?id=<?= $item->user->id ?>"><img src="<?= $base ?>/resources/media/avatars/<?= $avatar ?>" /></a>
             </div>
             <div class="feed-item-head-info">
                 <a href=""><span class="fidi-name"><?= $item->user->name ?></span></a>
@@ -44,28 +45,18 @@ $isLiked = $item->liked;
             <?php foreach($item->comments as $comments): ?>
             <div class="fic-item row m-height-10 m-width-20">
                 <div class="fic-item-photo">
-                    <a href=""><img src="<?= $base ?>/resources/media/avatars/avatar.jpg" /></a>
+                    <a href=""><img src="<?= $base ?>/resources/media/avatars/<?= $item->user->avatar ?>" /></a>
                 </div>
                 <div class="fic-item-info">
-                    <a href="">Bonieky Lacerda</a>
-                    Comentando no meu próprio post
+                    <a href=""><?= $item->user->nome ?></a>
+                    <?= $item->comments ?>
                 </div>
             </div>
             <?php endforeach; ?>
 
-            <div class="fic-item row m-height-10 m-width-20">
-                <div class="fic-item-photo">
-                    <a href=""><img src="<?= $base ?>/resources/media/avatars/avatar.jpg" /></a>
-                </div>
-                <div class="fic-item-info">
-                    <a href="">Bonieky Lacerda</a>
-                    Muito legal, parabéns!
-                </div>
-            </div>
-
             <div class="fic-answer row m-height-10 m-width-20">
                 <div class="fic-item-photo">
-                    <a href="<?= $base ?>/perfil.php"><img src="<?= $base ?>/resources/media/avatars/<?= $user_info->avatar ?>" /></a>
+                    <a href="<?= $base ?>/perfil.php"><img src="<?= $base ?>/resources/media/avatars/<?= $avatar ?>" /></a>
                 </div>
                 <input type="text" class="fic-item-field" placeholder="Escreva um comentário" />
             </div>

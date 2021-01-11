@@ -1,11 +1,13 @@
 <?php
 require 'config.php';
+require 'models/Auth.php';
+require 'dao/PostDao.php';
 
 $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken();
 
-echo '<pre>';
-var_dump($userInfo);exit;
+//echo '<pre>';
+//var_dump($userInfo);exit;
 $activeMenu = 'home';
 
 $postDao = new PostDao($pdo);
