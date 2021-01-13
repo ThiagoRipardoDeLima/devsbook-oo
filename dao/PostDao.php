@@ -90,11 +90,12 @@ class PostDao implements IPostDao
 
         // 1 . Lista  de  user que  eu sigo
         $urd = new UserRelationDao($this->pdo);
-        $userList = $urd->getRelationsFrom($id_user);
-
+        $userList = $urd->getFollowing($id_user);
+        $userList[] = $id_user;
+        
         // 2 . Pegar  os posts ordenado pela  data
         $sql = $this->pdo->query("SELECT * FROM posts WHERE id_user in (".implode(',', $userList).") ORDER BY created_at DESC");
-
+    
         if($sql->rowCount() > 0){
             $data = $sql->fetchAll(PDO::FETCH_ASSOC);
 
@@ -102,9 +103,8 @@ class PostDao implements IPostDao
             $array = $this->_postListToObjet($data, $id_user);
 
         }
-
+       
         return $array;
-        
 
     }
 

@@ -1,5 +1,6 @@
 <?php 
-require 'models/User.php';
+require_once 'models/User.php';
+require_once 'dao/UserRelationDao.php';
 
 class UserDao implements IUserDao 
 {
@@ -10,7 +11,7 @@ class UserDao implements IUserDao
         $this->pdo  = $driver;
     }
 
-    private function generateUser($Users)
+    private function generateUser($Users, $full = false)
     {
         $user               = new User();
         $user->id           = $Users['id'] ?? 0;
@@ -23,6 +24,18 @@ class UserDao implements IUserDao
         $user->cover        = $Users['cover'] ?? '';
         $user->token        = $Users['token'] ?? '';
         $user->work         = $Users['work'] ?? '';
+
+        if($full){
+            $urDao = new UserRelationDao($this->pdo);
+
+            //buscar seguidores
+            $user->followers = $urDao->getFollowers($user->id);
+            //buscar seguindo
+            $user->following = $urDao->getFollowing($user->id);
+            //buscar fotos
+            $user->photos = [];
+
+        }
 
         return $user;
 
@@ -65,7 +78,7 @@ class UserDao implements IUserDao
         exit;
     }
 
-    public function findById($id)
+    public function findById($id, $full = false)
     {
        
         if( !empty($id) ){
@@ -76,7 +89,7 @@ class UserDao implements IUserDao
 
             if( $prepare->rowCount()> 0 ){
                 $data  = $prepare->fetch(PDO::FETCH_ASSOC);
-                $user  = $this->generateUser($data);
+                $user  = $this->generateUser($data, $full);
                 return $user;
             }
         }
