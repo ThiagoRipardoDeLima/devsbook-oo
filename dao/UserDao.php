@@ -30,8 +30,18 @@ class UserDao implements IUserDao
 
             //buscar seguidores
             $user->followers = $urDao->getFollowers($user->id);
+            foreach($user->followers as $key => $follower_id){
+                $newUser = $this->findById($follower_id);
+                $user->followers[$key] = $newUser;
+            }
+
             //buscar seguindo
             $user->following = $urDao->getFollowing($user->id);
+            foreach($user->following as $key=>$follwing_id){
+                $newUser = $this->findById($follwing_id);
+                $user->following[$key] = $newUser;
+            }
+
             //buscar fotos
             $user->photos = [];
 
@@ -97,7 +107,6 @@ class UserDao implements IUserDao
         return false;
         
     }
-
 
     public function update(User $u)
     {
